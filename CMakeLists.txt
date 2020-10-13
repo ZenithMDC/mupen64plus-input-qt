@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.18)
 
 project(mupen64plus-input-qt)
 
+set(CMAKE_AUTOMOC ON)
 find_package(Qt5 COMPONENTS Widgets Core REQUIRED)
 
 find_package(PkgConfig REQUIRED)
