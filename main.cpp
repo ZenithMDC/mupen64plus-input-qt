@@ -38,7 +38,6 @@
 #define QT_INPUT_PLUGIN_VERSION 0x020500
 #define INPUT_PLUGIN_API_VERSION 0x020100
 static int l_PluginInit = 0;
-int emu_running = 0;
 static unsigned char myKeyState[SDL_NUM_SCANCODES];
 QSettings* settings;
 QSettings* controllerSettings;
@@ -196,7 +195,6 @@ void closeControllers()
         controller[i].gamepad = NULL;
         controller[i].joystick = NULL;
     }
-    emu_running = 0;
 }
 
 EXPORT m64p_error CALL PluginShutdown(void)
@@ -569,7 +567,6 @@ EXPORT void CALL InitiateControllers(CONTROL_INFO ControlInfo)
 
         setPak(i);
     }
-    emu_running = 1;
 }
 
 EXPORT void CALL ReadController(int, unsigned char *)

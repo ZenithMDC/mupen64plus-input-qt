@@ -10,7 +10,6 @@
 
 extern QSettings* settings;
 extern QSettings* controllerSettings;
-extern int emu_running;
 
 class ControllerTab : public QWidget
 {
@@ -43,7 +42,6 @@ class ProfileTab : public QWidget
 public:
     ProfileTab(ControllerTab **_controllerTabs);
 private:
-    int checkNotRunning();
     void setComboBox(QComboBox* box, ControllerTab **_controllerTabs);
 };
 
