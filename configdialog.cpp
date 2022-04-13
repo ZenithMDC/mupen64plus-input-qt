@@ -478,6 +478,18 @@ ProfileEditor::ProfileEditor(QString profile)
     lineH2->setFrameShadow(QFrame::Sunken);
     layout->addWidget(lineH2, 8, 0, 1, 8);
 
+    QLabel *buttonLabelToggleAbsoluteXYAxis = new QLabel("Toggle Absolute X/Y Axis", this);
+    buttonLabelRTrigger->setAlignment(Qt::AlignCenter);
+    CustomButton *buttonToggleAbsoluteXYAxis = new CustomButton(section, "ToggleAbsoluteXYAxis", this);
+    buttonList.append(buttonToggleAbsoluteXYAxis);
+    layout->addWidget(buttonLabelToggleAbsoluteXYAxis, 9, 0);
+    layout->addWidget(buttonToggleAbsoluteXYAxis, 9, 1);
+
+    QFrame* lineH3 = new QFrame(this);
+    lineH3->setFrameShape(QFrame::HLine);
+    lineH3->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(lineH3, 10, 0, 1, 8);
+
     QLabel *buttonLabelDeadzone = new QLabel("Deadzone", this);
     buttonLabelDeadzone->setAlignment(Qt::AlignCenter);
     QLabel *buttonLabelDeadzoneValue = new QLabel(this);
@@ -497,9 +509,9 @@ ProfileEditor::ProfileEditor(QString profile)
         buttonLabelDeadzoneValue->setText(QString::number(percent, 'f', 1) + "%");
     });
 
-    layout->addWidget(buttonLabelDeadzone, 9, 0);
-    layout->addWidget(buttonLabelDeadzoneValue, 9, 1);
-    layout->addWidget(sliderDeadzone, 9, 2, 1, 6);
+    layout->addWidget(buttonLabelDeadzone, 11, 0);
+    layout->addWidget(buttonLabelDeadzoneValue, 11, 1);
+    layout->addWidget(sliderDeadzone, 11, 2, 1, 6);
 
     QLabel *buttonLabelSensitivity = new QLabel("Analog Sensitivity", this);
     buttonLabelSensitivity->setAlignment(Qt::AlignCenter);
@@ -520,14 +532,14 @@ ProfileEditor::ProfileEditor(QString profile)
         buttonLabelSensitivityValue->setText(QString::number(percent, 'f', 1) + "%");
     });
 
-    layout->addWidget(buttonLabelSensitivity, 10, 0);
-    layout->addWidget(buttonLabelSensitivityValue, 10, 1);
-    layout->addWidget(sliderSensitivity, 10, 2, 1, 6);
+    layout->addWidget(buttonLabelSensitivity, 12, 0);
+    layout->addWidget(buttonLabelSensitivityValue, 12, 1);
+    layout->addWidget(sliderSensitivity, 12, 2, 1, 6);
 
-    QFrame* lineH3 = new QFrame(this);
-    lineH3->setFrameShape(QFrame::HLine);
-    lineH3->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH3, 11, 0, 1, 8);
+    QFrame* lineH4 = new QFrame(this);
+    lineH4->setFrameShape(QFrame::HLine);
+    lineH4->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(lineH4, 13, 0, 1, 8);
 
     QPushButton *buttonPushSave = new QPushButton("Save and Close", this);
     connect(buttonPushSave, &QPushButton::released, [=]() {
@@ -579,12 +591,12 @@ ProfileEditor::ProfileEditor(QString profile)
             msgBox.exec();
         }
     });
-    layout->addWidget(buttonPushSave, 12, 0, 1, 2);
+    layout->addWidget(buttonPushSave, 14, 0, 1, 2);
     QPushButton *buttonPushClose = new QPushButton("Close Without Saving", this);
     connect(buttonPushClose, &QPushButton::released, [=]() {
         this->done(1);
     });
-    layout->addWidget(buttonPushClose, 12, 6, 1, 2);
+    layout->addWidget(buttonPushClose, 14, 6, 1, 2);
 
     setLayout(layout);
     setWindowTitle(tr("Profile Editor"));

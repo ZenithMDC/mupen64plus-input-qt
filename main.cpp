@@ -44,7 +44,246 @@ QSettings* settings;
 QSettings* controllerSettings;
 SController controller[4];   // 4 controllers
 
+int absolute_xy_axis_enabled = 0;
+uint8_t absolute_x_axis[4];
+uint8_t absolute_y_axis[4];
+
 Q_DECLARE_METATYPE(QList<int>)
+
+void generate_keyboard_section(QString section)
+{
+    QList<int> values;
+    values.insert(0, 0/*blank value*/);
+    values.insert(1, 0/*Keyboard*/);
+
+    if(!settings->contains(section + "/A"))
+    {
+        values.replace(0, SDL_SCANCODE_LSHIFT);
+        settings->setValue(section + "/A", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/B"))
+    {
+        values.replace(0, SDL_SCANCODE_LCTRL);
+        settings->setValue(section + "/B", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Z"))
+    {
+        values.replace(0, SDL_SCANCODE_Z);
+        settings->setValue(section + "/Z", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/L"))
+    {
+        values.replace(0, SDL_SCANCODE_X);
+        settings->setValue(section + "/L", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/R"))
+    {
+        values.replace(0, SDL_SCANCODE_C);
+        settings->setValue(section + "/R", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Start"))
+    {
+        values.replace(0, SDL_SCANCODE_RETURN);
+        settings->setValue(section + "/Start", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadL"))
+    {
+        values.replace(0, SDL_SCANCODE_A);
+        settings->setValue(section + "/DPadL", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadR"))
+    {
+        values.replace(0, SDL_SCANCODE_D);
+        settings->setValue(section + "/DPadR", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadU"))
+    {
+        values.replace(0, SDL_SCANCODE_W);
+        settings->setValue(section + "/DPadU", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadD"))
+    {
+        values.replace(0, SDL_SCANCODE_S);
+        settings->setValue(section + "/DPadD", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CLeft"))
+    {
+        values.replace(0, SDL_SCANCODE_J);
+        settings->setValue(section + "/CLeft", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CRight"))
+    {
+        values.replace(0, SDL_SCANCODE_L);
+        settings->setValue(section + "/CRight", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CUp"))
+    {
+        values.replace(0, SDL_SCANCODE_I);
+        settings->setValue(section + "/CUp", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CDown"))
+    {
+        values.replace(0, SDL_SCANCODE_K);
+        settings->setValue(section + "/CDown", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisLeft"))
+    {
+        values.replace(0, SDL_SCANCODE_LEFT);
+        settings->setValue(section + "/AxisLeft", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisRight"))
+    {
+        values.replace(0, SDL_SCANCODE_RIGHT);
+        settings->setValue(section + "/AxisRight", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisUp"))
+    {
+        values.replace(0, SDL_SCANCODE_UP);
+        settings->setValue(section + "/AxisUp", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisDown"))
+    {
+        values.replace(0, SDL_SCANCODE_DOWN);
+        settings->setValue(section + "/AxisDown", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/ToggleAbsoluteXYAxis"))
+    {
+        values.replace(0, SDL_SCANCODE_UNKNOWN);
+        settings->setValue(section + "/ToggleAbsoluteXYAxis", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Deadzone"))
+    {
+        settings->setValue(section + "/Deadzone", DEADZONE_DEFAULT);
+    }
+    if(!settings->contains(section + "/Sensitivity"))
+    {
+        settings->setValue(section + "/Sensitivity", 100.0);
+    }
+}
+
+void generate_gamepad_section(QString section)
+{
+    QList<int> values;
+    values.insert(0, 0/*blank value*/);
+    values.insert(1, 1/*Button*/);
+
+    if(!settings->contains(section + "/A"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_A);
+        settings->setValue(section + "/A", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/B"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_X);
+        settings->setValue(section + "/B", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Z"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+        values.replace(1, 2/*Axis*/);
+        values.insert(2, 1 /* positive axis value*/);
+        settings->setValue(section + "/Z", QVariant::fromValue(values));
+        values.removeAt(2);
+    }
+    if(!settings->contains(section + "/L"))
+    {
+        values.replace(1, 1/*Button*/);
+        values.replace(0, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+        settings->setValue(section + "/L", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/R"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+        settings->setValue(section + "/R", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Start"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_START);
+        settings->setValue(section + "/Start", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadL"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+        settings->setValue(section + "/DPadL", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadR"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+        settings->setValue(section + "/DPadR", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadU"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_UP);
+        settings->setValue(section + "/DPadU", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/DPadD"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+        settings->setValue(section + "/DPadD", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/ToggleAbsoluteXYAxis"))
+    {
+        values.replace(0, SDL_CONTROLLER_BUTTON_INVALID);
+        settings->setValue(section + "/ToggleAbsoluteXYAxis", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CLeft"))
+    {
+        values.replace(1, 2/*Axis*/);
+        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTX);
+        values.insert(2, -1 /* negative axis value*/);
+        settings->setValue(section + "/CLeft", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CRight"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTX);
+        values.replace(2, 1 /* positive axis value*/);
+        settings->setValue(section + "/CRight", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CUp"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTY);
+        values.replace(2, -1 /* negative axis value*/);
+        settings->setValue(section + "/CUp", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/CDown"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTY);
+        values.replace(2, 1 /* positive axis value*/);
+        settings->setValue(section + "/CDown", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisLeft"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_LEFTX);
+        values.replace(2, -1 /* negative axis value*/);
+        settings->setValue(section + "/AxisLeft", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisRight"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_LEFTX);
+        values.replace(2, 1 /* positive axis value*/);
+        settings->setValue(section + "/AxisRight", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisUp"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_LEFTY);
+        values.replace(2, -1 /* negative axis value*/);
+        settings->setValue(section + "/AxisUp", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/AxisDown"))
+    {
+        values.replace(0, SDL_CONTROLLER_AXIS_LEFTY);
+        values.replace(2, 1 /* positive axis value*/);
+        settings->setValue(section + "/AxisDown", QVariant::fromValue(values));
+    }
+    if(!settings->contains(section + "/Deadzone"))
+    {
+        settings->setValue(section + "/Deadzone", DEADZONE_DEFAULT);
+    }
+    if(!settings->contains(section + "/Sensitivity"))
+    {
+        settings->setValue(section + "/Sensitivity", 100.0);
+    }
+}
 
 EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreHandle, void *, void (*)(void *, int, const char *))
 {
@@ -69,107 +308,21 @@ EXPORT m64p_error CALL PluginStartup(m64p_dynlib_handle CoreHandle, void *, void
 
     qRegisterMetaTypeStreamOperators<QList<int> >("QList<int>");
 
-    QList<int> values;
-    section = "Auto-Keyboard";
-    values.insert(0, 0/*blank value*/);
-    values.insert(1, 0/*Keyboard*/);
-    if (!settings->childGroups().contains(section)) {
-        values.replace(0, SDL_SCANCODE_LSHIFT);
-        settings->setValue(section + "/A", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_LCTRL);
-        settings->setValue(section + "/B", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_Z);
-        settings->setValue(section + "/Z", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_X);
-        settings->setValue(section + "/L", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_C);
-        settings->setValue(section + "/R", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_RETURN);
-        settings->setValue(section + "/Start", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_A);
-        settings->setValue(section + "/DPadL", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_D);
-        settings->setValue(section + "/DPadR", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_W);
-        settings->setValue(section + "/DPadU", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_S);
-        settings->setValue(section + "/DPadD", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_J);
-        settings->setValue(section + "/CLeft", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_L);
-        settings->setValue(section + "/CRight", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_I);
-        settings->setValue(section + "/CUp", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_K);
-        settings->setValue(section + "/CDown", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_LEFT);
-        settings->setValue(section + "/AxisLeft", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_RIGHT);
-        settings->setValue(section + "/AxisRight", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_UP);
-        settings->setValue(section + "/AxisUp", QVariant::fromValue(values));
-        values.replace(0, SDL_SCANCODE_DOWN);
-        settings->setValue(section + "/AxisDown", QVariant::fromValue(values));
+    QStringList groups = settings->childGroups();
+    for(int i = 0; i < groups.size(); ++i)
+    {
+        generate_keyboard_section(groups.at(i));
+    }
 
-        settings->setValue(section + "/Deadzone", DEADZONE_DEFAULT);
-        settings->setValue(section + "/Sensitivity", 100.0);
+    section = "Auto-Keyboard";
+    if (!settings->childGroups().contains(section))
+    {
+        generate_keyboard_section(section);
     }
 
     section = "Auto-Gamepad";
-    values.replace(1, 1/*Button*/);
     if (!settings->childGroups().contains(section)) {
-        values.replace(0, SDL_CONTROLLER_BUTTON_A);
-        settings->setValue(section + "/A", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_X);
-        settings->setValue(section + "/B", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
-        values.replace(1, 2/*Axis*/);
-        values.insert(2, 1 /* positive axis value*/);
-        settings->setValue(section + "/Z", QVariant::fromValue(values));
-        values.removeAt(2);
-        values.replace(1, 1/*Button*/);
-        values.replace(0, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
-        settings->setValue(section + "/L", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-        settings->setValue(section + "/R", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_START);
-        settings->setValue(section + "/Start", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-        settings->setValue(section + "/DPadL", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-        settings->setValue(section + "/DPadR", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_UP);
-        settings->setValue(section + "/DPadU", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-        settings->setValue(section + "/DPadD", QVariant::fromValue(values));
-        values.replace(1, 2/*Axis*/);
-        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTX);
-        values.insert(2, -1 /* negative axis value*/);
-        settings->setValue(section + "/CLeft", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTX);
-        values.replace(2, 1 /* positive axis value*/);
-        settings->setValue(section + "/CRight", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTY);
-        values.replace(2, -1 /* negative axis value*/);
-        settings->setValue(section + "/CUp", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_RIGHTY);
-        values.replace(2, 1 /* positive axis value*/);
-        settings->setValue(section + "/CDown", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_LEFTX);
-        values.replace(2, -1 /* negative axis value*/);
-        settings->setValue(section + "/AxisLeft", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_LEFTX);
-        values.replace(2, 1 /* positive axis value*/);
-        settings->setValue(section + "/AxisRight", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_LEFTY);
-        values.replace(2, -1 /* negative axis value*/);
-        settings->setValue(section + "/AxisUp", QVariant::fromValue(values));
-        values.replace(0, SDL_CONTROLLER_AXIS_LEFTY);
-        values.replace(2, 1 /* positive axis value*/);
-        settings->setValue(section + "/AxisDown", QVariant::fromValue(values));
-
-        settings->setValue(section + "/Deadzone", DEADZONE_DEFAULT);
-        settings->setValue(section + "/Sensitivity", 100.0);
+        generate_gamepad_section(section);
     }
 
     if (!SDL_WasInit(SDL_INIT_GAMECONTROLLER))
@@ -327,10 +480,40 @@ void setAxis(int Control, int axis, BUTTONS *Keys, QString axis_dir, int directi
     switch (value.at(1)) {
         case 0 /*Keyboard*/:
             if (myKeyState[value.at(0)]) {
-                if (axis == 0)
-                    Keys->X_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                if (!absolute_xy_axis_enabled)
+                {
+                    if (axis == 0)
+                    {
+                        Keys->X_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                        absolute_x_axis[Control] = Keys->X_AXIS;
+                    }
+                    else
+                    {
+                        Keys->Y_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                        absolute_y_axis[Control] = Keys->Y_AXIS;
+                    }
+                }
                 else
-                    Keys->Y_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                {
+                    if (axis == 0)
+                    {
+                        Keys->X_AXIS += (int8_t)((MAX_AXIS_VALUE * direction) / 10.0);
+                        if (Keys->X_AXIS > MAX_AXIS_VALUE || Keys->X_AXIS < -MAX_AXIS_VALUE)
+                        {
+                            Keys->X_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                        }
+                        absolute_x_axis[Control] = Keys->X_AXIS;
+                    }
+                    else
+                    {
+                        Keys->Y_AXIS += (int8_t)((MAX_AXIS_VALUE * direction) / 10.0);
+                        if (Keys->Y_AXIS > MAX_AXIS_VALUE || Keys->Y_AXIS < -MAX_AXIS_VALUE)
+                        {
+                            Keys->Y_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
+                        }
+                        absolute_y_axis[Control] = Keys->Y_AXIS;
+                    }
+                }
             }
             break;
         case 1 /*Button*/:
@@ -446,14 +629,39 @@ void setPak(int Control)
         controller[Control].control->Plugin = PLUGIN_MEMPAK;
 }
 
+
 EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
 {
     if (controller[Control].control->Present == 0)
         return;
 
     setPak(Control);
-
     Keys->Value = 0;
+    absolute_xy_axis_enabled = 0;
+
+    QList<int> value = settings->value(controller[Control].profile + "/ToggleAbsoluteXYAxis").value<QList<int> >();
+
+    // Only handle absolute X/Y axis mode for keyboards, since it's not a useful
+    // feature for other input peripherals.
+    if (value.at(1) == 0)
+    {
+        if (myKeyState[value.at(0)])
+        {
+            absolute_xy_axis_enabled = 1;
+        }
+    }
+
+    if (!absolute_xy_axis_enabled)
+    {
+        absolute_x_axis[Control] = 0;
+        absolute_y_axis[Control] = 0;
+    }
+    else
+    {
+        Keys->X_AXIS = absolute_x_axis[Control];
+        Keys->Y_AXIS = absolute_y_axis[Control];
+    }
+
     setKey(Control, 0x0001/*R_DPAD*/, Keys, "DPadR");
     setKey(Control, 0x0002/*L_DPAD*/, Keys, "DPadL");
     setKey(Control, 0x0004/*D_DPAD*/, Keys, "DPadD");
