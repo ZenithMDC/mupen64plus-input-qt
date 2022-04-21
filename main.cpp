@@ -44,6 +44,15 @@
 
 #define QT_INPUT_PLUGIN_VERSION 0x020500
 #define INPUT_PLUGIN_API_VERSION 0x020100
+
+int min(int a, int b) { return (a < b) ? a : b; }
+int max(int a, int b) { return (a < b) ? b : a; }
+
+int clamp(int v, int low, int high)
+{
+    return min(high, max(low, v));
+}
+
 static int l_PluginInit = 0;
 int emu_running = 0;
 static unsigned char myKeyState[SDL_NUM_SCANCODES];
@@ -54,6 +63,7 @@ SController controller[NUM_CONTROLLERS]; // 4 controllers
 void (*debug_callback)(void *, int, const char *);
 void *debug_call_context;
 
+int axis_sensitivity[NUM_CONTROLLERS] = {MAX_AXIS_VALUE, MAX_AXIS_VALUE, MAX_AXIS_VALUE, MAX_AXIS_VALUE};
 bool absolute_xy_axis_enabled[NUM_CONTROLLERS]  = {false, false, false, false};
 bool absolute_xy_axis_key_held[NUM_CONTROLLERS] = {false, false, false, false};
 uint8_t absolute_x_axis[NUM_CONTROLLERS];
@@ -399,40 +409,15 @@ void setAxis(int Control, int axis, BUTTONS *Keys, QString axis_dir, int directi
     switch (value.at(1)) {
         case 0 /*Keyboard*/:
             if (myKeyState[value.at(0)]) {
-                if (!absolute_xy_axis_enabled[Control])
+                if (axis == 0)
                 {
-                    if (axis == 0)
-                    {
-                        Keys->X_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
-                        absolute_x_axis[Control] = Keys->X_AXIS;
-                    }
-                    else
-                    {
-                        Keys->Y_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
-                        absolute_y_axis[Control] = Keys->Y_AXIS;
-                    }
+                    Keys->X_AXIS = (int8_t)clamp(Keys->X_AXIS + axis_sensitivity[Control] * direction, -MAX_AXIS_VALUE, MAX_AXIS_VALUE);
+                    absolute_x_axis[Control] = Keys->X_AXIS;
                 }
                 else
                 {
-                    int absolute_xy_axis_sensitivity = settings->value(controller[Control].profile + "/AbsoluteXYAxisSensitivity").toInt();
-                    if (axis == 0)
-                    {
-                        Keys->X_AXIS += (int8_t)(absolute_xy_axis_sensitivity * direction);
-                        if (Keys->X_AXIS > MAX_AXIS_VALUE || Keys->X_AXIS < -MAX_AXIS_VALUE)
-                        {
-                            Keys->X_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
-                        }
-                        absolute_x_axis[Control] = Keys->X_AXIS;
-                    }
-                    else
-                    {
-                        Keys->Y_AXIS += (int8_t)(absolute_xy_axis_sensitivity * direction);
-                        if (Keys->Y_AXIS > MAX_AXIS_VALUE || Keys->Y_AXIS < -MAX_AXIS_VALUE)
-                        {
-                            Keys->Y_AXIS = (int8_t)(MAX_AXIS_VALUE * direction);
-                        }
-                        absolute_y_axis[Control] = Keys->Y_AXIS;
-                    }
+                    Keys->Y_AXIS = (int8_t)clamp(Keys->Y_AXIS + axis_sensitivity[Control] * direction, -MAX_AXIS_VALUE, MAX_AXIS_VALUE);
+                    absolute_y_axis[Control] = Keys->Y_AXIS;
                 }
             }
             break;
@@ -614,11 +599,13 @@ EXPORT void CALL GetKeys( int Control, BUTTONS *Keys )
     {
         absolute_x_axis[Control] = 0;
         absolute_y_axis[Control] = 0;
+        axis_sensitivity[Control] = MAX_AXIS_VALUE;
     }
     else
     {
         Keys->X_AXIS = absolute_x_axis[Control];
         Keys->Y_AXIS = absolute_y_axis[Control];
+        axis_sensitivity[Control] = settings->value(controller[Control].profile + "/AbsoluteXYAxisSensitivity").toInt();
     }
 
     setKey(Control, 0x0001/*R_DPAD*/, Keys, "DPadR");
