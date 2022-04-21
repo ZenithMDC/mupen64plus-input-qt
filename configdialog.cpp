@@ -4,7 +4,6 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
-#include <QLineEdit>
 #include <QMessageBox>
 #include <QKeyEvent>
 
@@ -193,8 +192,23 @@ void ProfileEditor::keyReleaseEvent(QKeyEvent *event)
         activeButton->key = value;
         activeButton->setText(SDL_GetScancodeName(activeButton->key));
         activeButton = nullptr;
-        for (int i = 0; i < buttonList.size(); ++i)
+        for (int i = 0; i < buttonList.size(); ++i) {
             buttonList.at(i)->setDisabled(0);
+        }
+        for (int i = 0; i < checkBoxList.size(); ++i) {
+            checkBoxList.at(i)->setDisabled(0);
+        }
+        for (int i = 0; i < sliderList.size(); ++i) {
+            sliderList.at(i)->setDisabled(0);
+        }
+        for (int i = 0; i < pushButtonList.size(); ++i) {
+            pushButtonList.at(i)->setDisabled(0);
+        }
+        for (int i = 0; i < lineEditList.size(); ++i) {
+            if (!editingProfile) {
+                lineEditList.at(i)->setDisabled(0);
+            }
+        }
     }
 }
 
@@ -212,6 +226,15 @@ void ProfileEditor::timerEvent(QTimerEvent *)
                 activeButton = nullptr;
                 for (i = 0; i < buttonList.size(); ++i)
                     buttonList.at(i)->setDisabled(0);
+                for (i = 0; i < checkBoxList.size(); ++i)
+                    checkBoxList.at(i)->setDisabled(0);
+                for (i = 0; i < sliderList.size(); ++i)
+                    sliderList.at(i)->setDisabled(0);
+                for (i = 0; i < pushButtonList.size(); ++i)
+                    pushButtonList.at(i)->setDisabled(0);
+                for (i = 0; i < lineEditList.size(); ++i)
+                    if (!editingProfile)
+                        lineEditList.at(i)->setDisabled(0);
                 return;
             case SDL_CONTROLLERAXISMOTION:
                 if (abs(e.caxis.value) > 16384) {
@@ -224,6 +247,15 @@ void ProfileEditor::timerEvent(QTimerEvent *)
                     activeButton = nullptr;
                     for (i = 0; i < buttonList.size(); ++i)
                         buttonList.at(i)->setDisabled(0);
+                    for (i = 0; i < checkBoxList.size(); ++i)
+                        checkBoxList.at(i)->setDisabled(0);
+                    for (i = 0; i < sliderList.size(); ++i)
+                        sliderList.at(i)->setDisabled(0);
+                    for (i = 0; i < pushButtonList.size(); ++i)
+                        pushButtonList.at(i)->setDisabled(0);
+                    for (i = 0; i < lineEditList.size(); ++i)
+                        if (!editingProfile)
+                            lineEditList.at(i)->setDisabled(0);
                     return;
                 }
                 break;
@@ -236,6 +268,15 @@ void ProfileEditor::timerEvent(QTimerEvent *)
                 activeButton = nullptr;
                 for (i = 0; i < buttonList.size(); ++i)
                     buttonList.at(i)->setDisabled(0);
+                for (i = 0; i < checkBoxList.size(); ++i)
+                    checkBoxList.at(i)->setDisabled(0);
+                for (i = 0; i < sliderList.size(); ++i)
+                    sliderList.at(i)->setDisabled(0);
+                for (i = 0; i < pushButtonList.size(); ++i)
+                    pushButtonList.at(i)->setDisabled(0);
+                for (i = 0; i < lineEditList.size(); ++i)
+                    if (!editingProfile)
+                        lineEditList.at(i)->setDisabled(0);
                 return;
             case SDL_JOYBUTTONDOWN:
                 killTimer(timer);
@@ -245,6 +286,15 @@ void ProfileEditor::timerEvent(QTimerEvent *)
                 activeButton = nullptr;
                 for (i = 0; i < buttonList.size(); ++i)
                     buttonList.at(i)->setDisabled(0);
+                for (i = 0; i < checkBoxList.size(); ++i)
+                    checkBoxList.at(i)->setDisabled(0);
+                for (i = 0; i < sliderList.size(); ++i)
+                    sliderList.at(i)->setDisabled(0);
+                for (i = 0; i < pushButtonList.size(); ++i)
+                    pushButtonList.at(i)->setDisabled(0);
+                for (i = 0; i < lineEditList.size(); ++i)
+                    if (!editingProfile)
+                        lineEditList.at(i)->setDisabled(0);
                 return;
             case SDL_JOYAXISMOTION:
                 if (abs(e.jaxis.value) > 16384) {
@@ -257,6 +307,15 @@ void ProfileEditor::timerEvent(QTimerEvent *)
                     activeButton = nullptr;
                     for (i = 0; i < buttonList.size(); ++i)
                         buttonList.at(i)->setDisabled(0);
+                    for (i = 0; i < checkBoxList.size(); ++i)
+                        checkBoxList.at(i)->setDisabled(0);
+                    for (i = 0; i < sliderList.size(); ++i)
+                        sliderList.at(i)->setDisabled(0);
+                    for (i = 0; i < pushButtonList.size(); ++i)
+                        pushButtonList.at(i)->setDisabled(0);
+                    for (i = 0; i < lineEditList.size(); ++i)
+                        if (!editingProfile)
+                            lineEditList.at(i)->setDisabled(0);
                     return;
                 }
                 break;
@@ -270,6 +329,20 @@ void ProfileEditor::timerEvent(QTimerEvent *)
         for (i = 0; i < buttonList.size(); ++i) {
             buttonList.at(i)->setDisabled(0);
         }
+        for (i = 0; i < checkBoxList.size(); ++i) {
+            checkBoxList.at(i)->setDisabled(0);
+        }
+        for (i = 0; i < sliderList.size(); ++i) {
+            sliderList.at(i)->setDisabled(0);
+        }
+        for (i = 0; i < pushButtonList.size(); ++i) {
+            pushButtonList.at(i)->setDisabled(0);
+        }
+        for (i = 0; i < lineEditList.size(); ++i) {
+            if (!editingProfile) {
+            lineEditList.at(i)->setDisabled(0);
+            }
+        }
         return;
     }
     --buttonTimer;
@@ -281,6 +354,18 @@ void ProfileEditor::acceptInput(CustomButton* button)
     activeButton = button;
     for (int i = 0; i < buttonList.size(); ++i) {
         buttonList.at(i)->setDisabled(1);
+    }
+    for (int i = 0; i < checkBoxList.size(); ++i) {
+        checkBoxList.at(i)->setDisabled(1);
+    }
+    for (int i = 0; i < sliderList.size(); ++i) {
+        sliderList.at(i)->setDisabled(1);
+    }
+    for (int i = 0; i < pushButtonList.size(); ++i) {
+        pushButtonList.at(i)->setDisabled(1);
+    }
+    for (int i = 0; i < lineEditList.size(); ++i) {
+        lineEditList.at(i)->setDisabled(1);
     }
     buttonTimer = 50;
     activeButton->origText = activeButton->text();
@@ -319,22 +404,33 @@ ProfileEditor::ProfileEditor(QString profile)
     QString section = profile;
     QLineEdit *profileName = new QLineEdit(this);
     if (profile == "Auto-Keyboard" || profile == "Auto-Gamepad") {
+        editingProfile = false;
         profileName->setDisabled(0);
         profile = "";
     }
-    else
+    else {
+        editingProfile = true;
         profileName->setDisabled(1);
+    }
+
+    QString toggleToolTip = "When enabled, press the key to enter this mode and press the key once more to leave it.\n"
+                            "When disabled, you must hold the key to stay in this mode.";
+    QString turboControllerButtonToolTip = "Allow turbo?";
+    QString turboRateSliderToolTip = "If turbo mode seemingly does nothing, try increasing the number of wait-frames.\n"
+                                     "Turbo inputs are held during the first half of wait-frames and released during the remainder.";
+    QString absoluteXYAxisSensitivitySliderToolTip = "Allows for precise control stick movements, using a keyboard.";
 
     QGridLayout *layout = new QGridLayout(this);
     QLabel *profileNameLabel = new QLabel("Profile Name", this);
     profileName->setText(profile);
-    layout->addWidget(profileNameLabel, 0, 3);
-    layout->addWidget(profileName, 0, 4);
+    lineEditList.append(profileName);
+    layout->addWidget(profileNameLabel, 0, 4);
+    layout->addWidget(profileName, 0, 5);
 
     QFrame* lineH = new QFrame(this);
     lineH->setFrameShape(QFrame::HLine);
     lineH->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH, 1, 0, 1, 8);
+    layout->addWidget(lineH, 1, 0, 1, 11);
 
     QLabel *buttonLabelA = new QLabel("A", this);
     buttonLabelA->setAlignment(Qt::AlignCenter);
@@ -378,123 +474,344 @@ ProfileEditor::ProfileEditor(QString profile)
     layout->addWidget(buttonLabelRTrigger, 7, 0);
     layout->addWidget(buttonPushRTrigger, 7, 1);
 
+    unsigned turbo_eligible = settings->value(section + "/TurboEligible").toUInt();
+
+    bool checkBoxTurboDPadRState    = turbo_eligible & 0x0001;
+    bool checkBoxTurboDPadLState    = turbo_eligible & 0x0002;
+    bool checkBoxTurboDPadDState    = turbo_eligible & 0x0004;
+    bool checkBoxTurboDPadUState    = turbo_eligible & 0x0008;
+    bool checkBoxTurboStartState    = turbo_eligible & 0x0010;
+    bool checkBoxTurboZState        = turbo_eligible & 0x0020;
+    bool checkBoxTurboBState        = turbo_eligible & 0x0040;
+    bool checkBoxTurboAState        = turbo_eligible & 0x0080;
+    bool checkBoxTurboCRState       = turbo_eligible & 0x0100;
+    bool checkBoxTurboCLState       = turbo_eligible & 0x0200;
+    bool checkBoxTurboCDState       = turbo_eligible & 0x0400;
+    bool checkBoxTurboCUState       = turbo_eligible & 0x0800;
+    bool checkBoxTurboRTriggerState = turbo_eligible & 0x1000;
+    bool checkBoxTurboLTriggerState = turbo_eligible & 0x2000;
+
+    QCheckBox *checkBoxTurboA = new QCheckBox(nullptr, this);
+    checkBoxTurboA->setChecked(checkBoxTurboAState);
+    checkBoxTurboA->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboA, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboA->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboA);
+    layout->addWidget(checkBoxTurboA, 2, 2, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboB = new QCheckBox(nullptr, this);
+    checkBoxTurboB->setChecked(checkBoxTurboBState);
+    checkBoxTurboB->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboB, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboB->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboB);
+    layout->addWidget(checkBoxTurboB, 3, 2, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboZ = new QCheckBox(nullptr, this);
+    checkBoxTurboZ->setChecked(checkBoxTurboZState);
+    checkBoxTurboZ->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboZ, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboZ->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboZ);
+    layout->addWidget(checkBoxTurboZ, 4, 2, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboStart = new QCheckBox(nullptr, this);
+    checkBoxTurboStart->setChecked(checkBoxTurboStartState);
+    checkBoxTurboStart->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboStart, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboStart->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboStart);
+    layout->addWidget(checkBoxTurboStart, 5, 2, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboLTrigger = new QCheckBox(nullptr, this);
+    checkBoxTurboLTrigger->setChecked(checkBoxTurboLTriggerState);
+    checkBoxTurboLTrigger->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboLTrigger, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboLTrigger->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboLTrigger);
+    layout->addWidget(checkBoxTurboLTrigger, 6, 2, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboRTrigger = new QCheckBox(nullptr, this);
+    checkBoxTurboRTrigger->setChecked(checkBoxTurboRTriggerState);
+    checkBoxTurboRTrigger->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboRTrigger, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboRTrigger->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboRTrigger);
+    layout->addWidget(checkBoxTurboRTrigger, 7, 2, Qt::AlignCenter);
+
     QFrame* lineV = new QFrame(this);
     lineV->setFrameShape(QFrame::VLine);
     lineV->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineV, 2, 2, 6, 1);
+    layout->addWidget(lineV, 2, 3, 6, 1);
 
     QLabel *buttonLabelDPadL = new QLabel("DPad Left", this);
     buttonLabelDPadL->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushDPadL = new CustomButton(section, "DPadL", this);
     buttonList.append(buttonPushDPadL);
-    layout->addWidget(buttonLabelDPadL, 2, 3);
-    layout->addWidget(buttonPushDPadL, 2, 4);
+    layout->addWidget(buttonLabelDPadL, 2, 4);
+    layout->addWidget(buttonPushDPadL, 2, 5);
 
     QLabel *buttonLabelDPadR = new QLabel("DPad Right", this);
     buttonLabelDPadR->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushDPadR = new CustomButton(section, "DPadR", this);
     buttonList.append(buttonPushDPadR);
-    layout->addWidget(buttonLabelDPadR, 3, 3);
-    layout->addWidget(buttonPushDPadR, 3, 4);
+    layout->addWidget(buttonLabelDPadR, 3, 4);
+    layout->addWidget(buttonPushDPadR, 3, 5);
 
     QLabel *buttonLabelDPadU = new QLabel("DPad Up", this);
     buttonLabelDPadU->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushDPadU = new CustomButton(section, "DPadU", this);
     buttonList.append(buttonPushDPadU);
-    layout->addWidget(buttonLabelDPadU, 4, 3);
-    layout->addWidget(buttonPushDPadU, 4, 4);
+    layout->addWidget(buttonLabelDPadU, 4, 4);
+    layout->addWidget(buttonPushDPadU, 4, 5);
 
     QLabel *buttonLabelDPadD = new QLabel("DPad Down", this);
     buttonLabelDPadD->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushDPadD = new CustomButton(section, "DPadD", this);
     buttonList.append(buttonPushDPadD);
-    layout->addWidget(buttonLabelDPadD, 5, 3);
-    layout->addWidget(buttonPushDPadD, 5, 4);
+    layout->addWidget(buttonLabelDPadD, 5, 4);
+    layout->addWidget(buttonPushDPadD, 5, 5);
+
+    QCheckBox *checkBoxTurboDPadL = new QCheckBox(nullptr, this);
+    checkBoxTurboDPadL->setChecked(checkBoxTurboDPadLState);
+    checkBoxTurboDPadL->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboDPadL, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboDPadL->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboDPadL);
+    layout->addWidget(checkBoxTurboDPadL, 2, 6, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboDPadR = new QCheckBox(nullptr, this);
+    checkBoxTurboDPadR->setChecked(checkBoxTurboDPadRState);
+    checkBoxTurboDPadR->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboDPadR, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboDPadR->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboDPadR);
+    layout->addWidget(checkBoxTurboDPadR, 3, 6, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboDPadU = new QCheckBox(nullptr, this);
+    checkBoxTurboDPadU->setChecked(checkBoxTurboDPadUState);
+    checkBoxTurboDPadU->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboDPadU, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboDPadU->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboDPadU);
+    layout->addWidget(checkBoxTurboDPadU, 4, 6, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboDPadD = new QCheckBox(nullptr, this);
+    checkBoxTurboDPadD->setChecked(checkBoxTurboDPadDState);
+    checkBoxTurboDPadD->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboDPadD, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboDPadD->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboDPadD);
+    layout->addWidget(checkBoxTurboDPadD, 5, 6, Qt::AlignCenter);
 
     QFrame* lineV2 = new QFrame(this);
     lineV2->setFrameShape(QFrame::VLine);
     lineV2->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineV2, 2, 5, 6, 1);
+    layout->addWidget(lineV2, 2, 7, 6, 1);
 
     QLabel *buttonLabelCL = new QLabel("C Left", this);
     buttonLabelCL->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushCL = new CustomButton(section, "CLeft", this);
     buttonList.append(buttonPushCL);
-    layout->addWidget(buttonLabelCL, 2, 6);
-    layout->addWidget(buttonPushCL, 2, 7);
+    layout->addWidget(buttonLabelCL, 2, 8);
+    layout->addWidget(buttonPushCL, 2, 9);
 
     QLabel *buttonLabelCR = new QLabel("C Right", this);
     buttonLabelCR->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushCR = new CustomButton(section, "CRight", this);
     buttonList.append(buttonPushCR);
-    layout->addWidget(buttonLabelCR, 3, 6);
-    layout->addWidget(buttonPushCR, 3, 7);
+    layout->addWidget(buttonLabelCR, 3, 8);
+    layout->addWidget(buttonPushCR, 3, 9);
 
     QLabel *buttonLabelCU = new QLabel("C Up", this);
     buttonLabelCU->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushCU = new CustomButton(section, "CUp", this);
     buttonList.append(buttonPushCU);
-    layout->addWidget(buttonLabelCU, 4, 6);
-    layout->addWidget(buttonPushCU, 4, 7);
+    layout->addWidget(buttonLabelCU, 4, 8);
+    layout->addWidget(buttonPushCU, 4, 9);
 
     QLabel *buttonLabelCD = new QLabel("C Down", this);
     buttonLabelCD->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushCD = new CustomButton(section, "CDown", this);
     buttonList.append(buttonPushCD);
-    layout->addWidget(buttonLabelCD, 5, 6);
-    layout->addWidget(buttonPushCD, 5, 7);
-
+    layout->addWidget(buttonLabelCD, 5, 8);
+    layout->addWidget(buttonPushCD, 5, 9);
 
     QLabel *buttonLabelStickL = new QLabel("Control Stick Left", this);
     buttonLabelStickL->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushStickL = new CustomButton(section, "AxisLeft", this);
     buttonList.append(buttonPushStickL);
-    layout->addWidget(buttonLabelStickL, 6, 3);
-    layout->addWidget(buttonPushStickL, 6, 4);
+    layout->addWidget(buttonLabelStickL, 6, 4);
+    layout->addWidget(buttonPushStickL, 6, 5);
 
     QLabel *buttonLabelStickR = new QLabel("Control Stick Right", this);
     buttonLabelStickR->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushStickR = new CustomButton(section, "AxisRight", this);
     buttonList.append(buttonPushStickR);
-    layout->addWidget(buttonLabelStickR, 7, 3);
-    layout->addWidget(buttonPushStickR, 7, 4);
+    layout->addWidget(buttonLabelStickR, 7, 4);
+    layout->addWidget(buttonPushStickR, 7, 5);
 
     QLabel *buttonLabelStickU = new QLabel("Control Stick Up", this);
     buttonLabelStickU->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushStickU = new CustomButton(section, "AxisUp", this);
     buttonList.append(buttonPushStickU);
-    layout->addWidget(buttonLabelStickU, 6, 6);
-    layout->addWidget(buttonPushStickU, 6, 7);
+    layout->addWidget(buttonLabelStickU, 6, 8);
+    layout->addWidget(buttonPushStickU, 6, 9);
 
     QLabel *buttonLabelStickD = new QLabel("Control Stick Down", this);
     buttonLabelStickD->setAlignment(Qt::AlignCenter);
     CustomButton *buttonPushStickD = new CustomButton(section, "AxisDown", this);
     buttonList.append(buttonPushStickD);
-    layout->addWidget(buttonLabelStickD, 7, 6);
-    layout->addWidget(buttonPushStickD, 7, 7);
+    layout->addWidget(buttonLabelStickD, 7, 8);
+    layout->addWidget(buttonPushStickD, 7, 9);
+
+    QCheckBox *checkBoxTurboCL = new QCheckBox(nullptr, this);
+    checkBoxTurboCL->setChecked(checkBoxTurboCLState);
+    checkBoxTurboCL->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboCL, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboCL->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboCL);
+    layout->addWidget(checkBoxTurboCL, 2, 10, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboCR = new QCheckBox(nullptr, this);
+    checkBoxTurboCR->setChecked(checkBoxTurboCRState);
+    checkBoxTurboCR->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboCR, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboCR->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboCR);
+    layout->addWidget(checkBoxTurboCR, 3, 10, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboCU = new QCheckBox(nullptr, this);
+    checkBoxTurboCU->setChecked(checkBoxTurboCUState);
+    checkBoxTurboCU->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboCU, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboCU->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboCU);
+    layout->addWidget(checkBoxTurboCU, 4, 10, Qt::AlignCenter);
+
+    QCheckBox *checkBoxTurboCD = new QCheckBox(nullptr, this);
+    checkBoxTurboCD->setChecked(checkBoxTurboCDState);
+    checkBoxTurboCD->setToolTip(turboControllerButtonToolTip);
+    connect(checkBoxTurboCD, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxTurboCD->setChecked(value);
+    });
+    checkBoxList.append(checkBoxTurboCD);
+    layout->addWidget(checkBoxTurboCD, 5, 10, Qt::AlignCenter);
 
     QFrame* lineH2 = new QFrame(this);
     lineH2->setFrameShape(QFrame::HLine);
     lineH2->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH2, 8, 0, 1, 8);
+    layout->addWidget(lineH2, 8, 0, 1, 11);
 
-    QLabel *buttonLabelToggleAbsoluteXYAxis = new QLabel("Toggle Absolute X/Y Axis", this);
-    buttonLabelRTrigger->setAlignment(Qt::AlignCenter);
-    CustomButton *buttonToggleAbsoluteXYAxis = new CustomButton(section, "ToggleAbsoluteXYAxis", this);
-    buttonList.append(buttonToggleAbsoluteXYAxis);
-    layout->addWidget(buttonLabelToggleAbsoluteXYAxis, 9, 0);
-    layout->addWidget(buttonToggleAbsoluteXYAxis, 9, 1);
+    QLabel *buttonLabelAbsoluteXYAxis = new QLabel("Absolute X/Y Axis (Keyboard Only)", this);
+    buttonLabelAbsoluteXYAxis->setWordWrap(true);
+    buttonLabelAbsoluteXYAxis->setAlignment(Qt::AlignCenter);
+    CustomButton *buttonAbsoluteXYAxis = new CustomButton(section, "AbsoluteXYAxis", this);
+    buttonList.append(buttonAbsoluteXYAxis);
+    layout->addWidget(buttonLabelAbsoluteXYAxis, 9, 0);
+    layout->addWidget(buttonAbsoluteXYAxis, 9, 1, 1, 2);
+
+    QCheckBox *checkBoxToggleAbsoluteXYAxis = new QCheckBox("Toggle", this);
+    bool checkBoxToggleAbsoluteXYAxisState = settings->value(section + "/ToggleAbsoluteXYAxis").toBool();
+    checkBoxToggleAbsoluteXYAxis->setToolTip(toggleToolTip);
+    checkBoxToggleAbsoluteXYAxis->setChecked(checkBoxToggleAbsoluteXYAxisState);
+    connect(checkBoxToggleAbsoluteXYAxis, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxToggleAbsoluteXYAxis->setChecked(value);
+    });
+    checkBoxList.append(checkBoxToggleAbsoluteXYAxis);
+    layout->addWidget(checkBoxToggleAbsoluteXYAxis, 9, 3, 1, 2, Qt::AlignCenter);
+
+    QFrame* lineV3 = new QFrame(this);
+    lineV3->setFrameShape(QFrame::VLine);
+    lineV3->setFrameShadow(QFrame::Sunken);
+    layout->addWidget(lineV3, 9, 5, 2, 1);
+
+    QLabel *buttonLabelTurbo = new QLabel("Turbo", this);
+    buttonLabelTurbo->setAlignment(Qt::AlignCenter);
+    CustomButton *buttonTurbo = new CustomButton(section, "Turbo", this);
+    buttonList.append(buttonTurbo);
+    layout->addWidget(buttonLabelTurbo, 9, 5, 1, 3);
+    layout->addWidget(buttonTurbo, 9, 7, 1, 2);
+
+    QCheckBox *checkBoxToggleTurbo = new QCheckBox("Toggle", this);
+    bool checkBoxToggleTurboState = settings->value(section + "/ToggleTurbo").toBool();
+    checkBoxToggleTurbo->setToolTip(toggleToolTip);
+    checkBoxToggleTurbo->setChecked(checkBoxToggleTurboState);
+    connect(checkBoxToggleTurbo, &QAbstractButton::toggled, [=](bool value) {
+        checkBoxToggleTurbo->setChecked(value);
+    });
+    checkBoxList.append(checkBoxToggleTurbo);
+    layout->addWidget(checkBoxToggleTurbo, 9, 9, 1, 2, Qt::AlignCenter);
+
+    QLabel *buttonLabelAbsoluteXYAxisSensitivity = new QLabel("Sensitivity", this);
+    buttonLabelAbsoluteXYAxisSensitivity->setAlignment(Qt::AlignCenter);
+    QLabel *buttonLabelAbsoluteXYAxisSensitivityValue = new QLabel(this);
+    int AbsoluteXYAxisSensitivityValueValue = settings->value(section + "/AbsoluteXYAxisSensitivity").toInt();
+    QString buttonLabelAbsoluteXYAxisSensitivityTense = (AbsoluteXYAxisSensitivityValueValue != 1) ? " Units/Frame" : " Unit/Frame";
+    buttonLabelAbsoluteXYAxisSensitivityValue->setText(QString::number(AbsoluteXYAxisSensitivityValueValue) + buttonLabelAbsoluteXYAxisSensitivityTense);
+    buttonLabelAbsoluteXYAxisSensitivityValue->setAlignment(Qt::AlignCenter);
+    QSlider *sliderAbsoluteXYAxisSensitivity = new QSlider(Qt::Horizontal, this);
+    sliderAbsoluteXYAxisSensitivity->setMinimum(1);
+    sliderAbsoluteXYAxisSensitivity->setMaximum(10);
+    sliderAbsoluteXYAxisSensitivity->setTickPosition(QSlider::TicksBothSides);
+    sliderAbsoluteXYAxisSensitivity->setTickInterval(1);
+    sliderAbsoluteXYAxisSensitivity->setSliderPosition(AbsoluteXYAxisSensitivityValueValue);
+    sliderAbsoluteXYAxisSensitivity->setToolTip(absoluteXYAxisSensitivitySliderToolTip);
+    connect(sliderAbsoluteXYAxisSensitivity, &QSlider::valueChanged, [=](int value) {
+        QString buttonLabelAbsoluteXYAxisSensitivityTense = (value != 1) ? " Units/Frame" : " Unit/Frame";
+        buttonLabelAbsoluteXYAxisSensitivityValue->setText(QString::number(value) + buttonLabelAbsoluteXYAxisSensitivityTense);
+    });
+    sliderList.append(sliderAbsoluteXYAxisSensitivity);
+
+    layout->addWidget(buttonLabelAbsoluteXYAxisSensitivity, 10, 0);
+    layout->addWidget(buttonLabelAbsoluteXYAxisSensitivityValue, 10, 1, 1, 2);
+    layout->addWidget(sliderAbsoluteXYAxisSensitivity, 10, 3, 1, 2);
+
+    QLabel *buttonLabelTurboRate = new QLabel("Frequency", this);
+    buttonLabelTurboRate->setAlignment(Qt::AlignCenter);
+    QLabel *buttonLabelTurboRateValue = new QLabel(this);
+    unsigned turboRateValue = settings->value(section + "/TurboRate").toUInt() / 2;
+    buttonLabelTurboRateValue->setText("Wait " + QString::number(turboRateValue * 2) + " Frames");
+    buttonLabelTurboRateValue->setAlignment(Qt::AlignCenter);
+    QSlider *sliderTurboRate = new QSlider(Qt::Horizontal, this);
+    sliderTurboRate->setInvertedAppearance(true);
+    sliderTurboRate->setInvertedControls(true);
+    sliderTurboRate->setMinimum(1);
+    sliderTurboRate->setMaximum(8);
+    sliderTurboRate->setTickPosition(QSlider::TicksBothSides);
+    sliderTurboRate->setTickInterval(1);
+    sliderTurboRate->setSliderPosition(turboRateValue);
+    sliderTurboRate->setToolTip(turboRateSliderToolTip);
+    connect(sliderTurboRate, &QSlider::valueChanged, [=](unsigned value) {
+        buttonLabelTurboRateValue->setText("Wait " + QString::number(value * 2) + " Frames");
+    });
+    sliderList.append(sliderTurboRate);
+
+    layout->addWidget(buttonLabelTurboRate, 10, 5, 1, 3);
+    layout->addWidget(buttonLabelTurboRateValue, 10, 7, 1, 2);
+    layout->addWidget(sliderTurboRate, 10, 9, 1, 2);
 
     QFrame* lineH3 = new QFrame(this);
     lineH3->setFrameShape(QFrame::HLine);
     lineH3->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH3, 10, 0, 1, 8);
+    layout->addWidget(lineH3, 11, 0, 1, 11);
 
     QLabel *buttonLabelDeadzone = new QLabel("Deadzone", this);
     buttonLabelDeadzone->setAlignment(Qt::AlignCenter);
     QLabel *buttonLabelDeadzoneValue = new QLabel(this);
-    if (!settings->contains(section + "/Deadzone"))
-        settings->setValue(section + "/Deadzone", 12.5);
     float deadzoneValue = settings->value(section + "/Deadzone").toFloat();
     buttonLabelDeadzoneValue->setText(QString::number(deadzoneValue) + "%");
     buttonLabelDeadzoneValue->setAlignment(Qt::AlignCenter);
@@ -508,16 +825,15 @@ ProfileEditor::ProfileEditor(QString profile)
         float percent = value / 10.0;
         buttonLabelDeadzoneValue->setText(QString::number(percent, 'f', 1) + "%");
     });
+    sliderList.append(sliderDeadzone);
 
-    layout->addWidget(buttonLabelDeadzone, 11, 0);
-    layout->addWidget(buttonLabelDeadzoneValue, 11, 1);
-    layout->addWidget(sliderDeadzone, 11, 2, 1, 6);
+    layout->addWidget(buttonLabelDeadzone, 12, 0);
+    layout->addWidget(buttonLabelDeadzoneValue, 12, 1, 1, 2);
+    layout->addWidget(sliderDeadzone, 12, 3, 1, 8);
 
     QLabel *buttonLabelSensitivity = new QLabel("Analog Sensitivity", this);
     buttonLabelSensitivity->setAlignment(Qt::AlignCenter);
     QLabel *buttonLabelSensitivityValue = new QLabel(this);
-    if (!settings->contains(section + "/Sensitivity"))
-        settings->setValue(section + "/Sensitivity", 100.0);
     float sensitivityValue = settings->value(section + "/Sensitivity").toFloat();
     buttonLabelSensitivityValue->setText(QString::number(sensitivityValue) + "%");
     buttonLabelSensitivityValue->setAlignment(Qt::AlignCenter);
@@ -531,15 +847,16 @@ ProfileEditor::ProfileEditor(QString profile)
         float percent = value / 10.0;
         buttonLabelSensitivityValue->setText(QString::number(percent, 'f', 1) + "%");
     });
+    sliderList.append(sliderSensitivity);
 
-    layout->addWidget(buttonLabelSensitivity, 12, 0);
-    layout->addWidget(buttonLabelSensitivityValue, 12, 1);
-    layout->addWidget(sliderSensitivity, 12, 2, 1, 6);
+    layout->addWidget(buttonLabelSensitivity, 13, 0);
+    layout->addWidget(buttonLabelSensitivityValue, 13, 1, 1, 2);
+    layout->addWidget(sliderSensitivity, 13, 3, 1, 8);
 
     QFrame* lineH4 = new QFrame(this);
     lineH4->setFrameShape(QFrame::HLine);
     lineH4->setFrameShadow(QFrame::Sunken);
-    layout->addWidget(lineH4, 13, 0, 1, 8);
+    layout->addWidget(lineH4, 14, 0, 1, 11);
 
     QPushButton *buttonPushSave = new QPushButton("Save and Close", this);
     connect(buttonPushSave, &QPushButton::released, [=]() {
@@ -583,6 +900,19 @@ ProfileEditor::ProfileEditor(QString profile)
             settings->setValue(saveSection + "/Deadzone", percent);
             percent = sliderSensitivity->value() / 10.0;
             settings->setValue(saveSection + "/Sensitivity", percent);
+            settings->setValue(saveSection + "/ToggleTurbo", checkBoxToggleTurbo->isChecked());
+            settings->setValue(saveSection + "/ToggleAbsoluteXYAxis", checkBoxToggleAbsoluteXYAxis->isChecked());
+            settings->setValue(saveSection + "/AbsoluteXYAxisSensitivity", sliderAbsoluteXYAxisSensitivity->value());
+            settings->setValue(saveSection + "/TurboRate", sliderTurboRate->value() * 2);
+            settings->setValue(saveSection + "/TurboEligible",
+                checkBoxTurboDPadR->isChecked()    << 0  | checkBoxTurboDPadL->isChecked()    << 1  |
+                checkBoxTurboDPadD->isChecked()    << 2  | checkBoxTurboDPadU->isChecked()    << 3  |
+                checkBoxTurboStart->isChecked()    << 4  | checkBoxTurboZ->isChecked()        << 5  |
+                checkBoxTurboB->isChecked()        << 6  | checkBoxTurboA->isChecked()        << 7  |
+                checkBoxTurboCR->isChecked()       << 8  | checkBoxTurboCL->isChecked()       << 9  |
+                checkBoxTurboCD->isChecked()       << 10 | checkBoxTurboCU->isChecked()       << 11 |
+                checkBoxTurboRTrigger->isChecked() << 12 | checkBoxTurboLTrigger->isChecked() << 13
+            );
             this->done(1);
         }
         else {
@@ -591,15 +921,18 @@ ProfileEditor::ProfileEditor(QString profile)
             msgBox.exec();
         }
     });
-    layout->addWidget(buttonPushSave, 14, 0, 1, 2);
+    pushButtonList.append(buttonPushSave);
+    layout->addWidget(buttonPushSave, 15, 0, 1, 3);
     QPushButton *buttonPushClose = new QPushButton("Close Without Saving", this);
     connect(buttonPushClose, &QPushButton::released, [=]() {
         this->done(1);
     });
-    layout->addWidget(buttonPushClose, 14, 6, 1, 2);
+    pushButtonList.append(buttonPushClose);
+    layout->addWidget(buttonPushClose, 15, 8, 1, 3);
 
     setLayout(layout);
     setWindowTitle(tr("Profile Editor"));
+    setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 ConfigDialog::ConfigDialog()
@@ -618,4 +951,5 @@ ConfigDialog::ConfigDialog()
     mainLayout->addWidget(tabWidget);
     setLayout(mainLayout);
     setWindowTitle(tr("Controller Configuration"));
+    setWindowFlags(this->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }

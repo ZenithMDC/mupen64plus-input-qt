@@ -6,6 +6,9 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QComboBox>
+#include <QCheckBox>
+#include <QSlider>
+#include <QLineEdit>
 #include <SDL2/SDL.h>
 
 extern QSettings* settings;
@@ -80,7 +83,12 @@ private:
     SDL_GameController* gamepad[4];
     SDL_Joystick* joystick[4];
     QList<CustomButton*> buttonList;
+    QList<QCheckBox*> checkBoxList;
+    QList<QSlider*> sliderList;
+    QList<QPushButton*> pushButtonList;
+    QList<QLineEdit*> lineEditList;
     CustomButton* activeButton;
+    bool editingProfile;
     int buttonTimer;
     int timer;
 };

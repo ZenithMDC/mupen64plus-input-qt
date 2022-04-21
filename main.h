@@ -21,6 +21,9 @@ extern "C"
     EXPORT void CALL PluginConfig();
 }
 
+extern void (*debug_callback)(void *, int, const char *);
+extern void *debug_call_context;
+
 // Some stuff from n-rage plugin
 #define RD_GETSTATUS        0x00        // get status
 #define RD_READKEYS         0x01        // read button values
